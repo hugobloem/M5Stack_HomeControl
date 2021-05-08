@@ -1,0 +1,114 @@
+- id: '1583718534381'
+  alias: Auto Theme Selector
+  description: Automatically changes theme depending on the time of day
+  trigger:
+  - event: start
+    platform: homeassistant
+  - entity_id: sun.sun
+    from: below_horizon
+    platform: state
+    to: above_horizon
+  - entity_id: sun.sun
+    from: above_horizon
+    platform: state
+    to: below_horizon
+  condition: []
+  action:
+  - data_template:
+      name: "{% if states.sun.sun.state == \"above_horizon\" %}\n  Google Light Theme\n\
+        {% else %}\n  Google Dark Theme\n{% endif %}\n"
+    service_template: frontend.set_theme
+  mode: single
+- id: '1612627939548'
+  alias: Work at desk
+  description: Turn on desk lamp, turn off light, open blinds.
+  trigger:
+  - platform: webhook
+    webhook_id: work_at_desk
+  - platform: tag
+    tag_id: 8b86d693-0998-4719-8c0c-7b7925ed9639
+  condition: []
+  action:
+  - service: script.work_at_desk
+    data: {}
+  mode: single
+- id: '1612650216453'
+  alias: in_bed
+  description: Acticate go to bed scene
+  trigger:
+  - platform: tag
+    tag_id: 414654cf-7a62-4b7a-bc1d-b8d2734805e0
+  condition:
+  - condition: time
+    after: '12:00:00'
+    before: '04:00:00'
+  action:
+  - scene: scene.sleep
+  mode: single
+
+# - alias: mqtt2light_on
+#   trigger:
+#   - platform: mqtt
+#     topic: 'home/light/+/state/set'
+#   condition: "{{ trigger.payload == 'on' }}"
+#   action:
+#   - service: light.turn_on
+#     target:
+#       entity_id:
+#       - "{{ 'light.' + trigger.topic | replace('home/light/', '') | replace('/state/set', '') }}"
+#   condition: "{{ trigger.payload == 'off' }}"
+#   action:
+#   - service: light.turn_off
+#     target:
+#       entity_id:
+#       - "{{ 'light.' + trigger.topic | replace('home/light/', '') | replace('/state/set', '') }}"
+
+- alias: mqtt_light_state
+  trigger:
+  - platform: mqtt
+    topic: 'home/light/+/state/set'
+  action: 
+  - service: script.mqtt_light_state
+    data: 
+      topic: "{{ trigger.topic }}"
+      payload: "{{ trigger.payload }}"
+
+- alias: mqtt_light_brightness
+  trigger:
+  - platform: mqtt
+    topic: 'home/light/+/brightness/set'
+  action:
+  - service: script.mqtt_light_brightness
+    data:
+      topic: "{{ trigger.topic }}"
+      payload: "{{ trigger.payload }}"
+
+- alias: mqtt_light_ct
+  trigger:
+  - platform: mqtt
+    topic: 'home/light/+/color_temp/set'
+  action:
+  - service: script.mqtt_light_ct
+    data:
+      topic: "{{ trigger.topic }}"
+      payload: "{{ trigger.payload }}"
+
+- alias: mqtt_switch_state
+  trigger:
+  - platform: mqtt
+    topic: 'home/switch/+/state/set'
+  action:
+  - service: script.mqtt_switch_state
+    data:
+      topic: "{{ trigger.topic }}"
+      payload: "{{ trigger.payload }}"
+
+- alias: mqtt_cover_position
+  trigger:
+  - platform: mqtt
+    topic: 'home/cover/+/current_position/set'
+  action:
+  - service: script.mqtt_cover_position
+    data:
+      topic: "{{ trigger.topic }}"
+      payload: "{{ trigger.payload }}"

@@ -1,0 +1,98 @@
+work_at_desk:
+  alias: work_at_desk
+  icon: mdi:laptop
+  sequence:
+  - condition: state
+    entity_id: sun.sun
+    state: above_horizon
+  - scene: scene.work_day
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  - scene: scene.work_night
+  mode: single
+
+in_bed:
+  alias: in_bed
+  icon: mdi:bed
+  sequence:
+  - condition: time
+    after: '20:00:00'
+    before: '04:00:00'
+  - scene: scene.sleep
+  - condition: time
+    after: '05:00:00'
+    before: '13:00:00'
+  - scene: scene.wake_up
+  mode: single
+
+mqtt_light_state:
+  alias: 'MQTT 2 light state'
+  fields:
+    topic:
+      description: "mqtt topic"
+    payload:
+      description: "mqtt payload"
+  sequence:
+  - service: "{{ 'light.turn_' + payload }}"
+    target:
+      entity_id:
+      - "{{ 'light.' + topic | replace('home/light/', '') | replace('/state/set', '') }}"
+
+mqtt_light_brightness:
+  alias: 'MQTT 2 light brightness'
+  fields:
+    topic:
+      description: "mqtt topic"
+    payload:
+      description: "mqtt payload"
+  sequence:
+  - service: light.turn_on
+    target:
+      entity_id:
+      - "{{ 'light.' + topic | replace('home/light/', '') | replace('/brightness/set', '') }}"
+    data:
+      brightness: "{{ payload }}"
+
+mqtt_light_ct:
+  alias: 'MQTT 2 light colour temperature'
+  fields:
+    topic:
+      description: "mqtt topic"
+    payload:
+      description: "mqtt payload"
+  sequence:
+  - service: light.turn_on
+    target:
+      entity_id:
+      - "{{ 'light.' + topic | replace('home/light/', '') | replace('/color_temp/set', '') }}"
+    data:
+      kelvin: "{{ payload }}"
+
+mqtt_switch_state:
+  alias: 'MQTT 2 switch state'
+  fields:
+    topic:
+      description: "mqtt topic"
+    payload:
+      description: "mqtt payload"
+  sequence:
+  - service: "{{ 'switch.turn_' + payload }}"
+    target:
+      entity_id:
+      - "{{ 'switch.' + topic | replace('home/switch/', '') | replace('/state/set', '') }}"
+
+mqtt_cover_position:
+  alias: 'MQTT 2 cover position'
+  fields:
+    topic:
+      description: "mqtt topic"
+    payload:
+      description: "mqtt payload"
+  sequence:
+  - service: cover.set_cover_position
+    target:
+      entity_id:
+      - "{{ 'cover.' + topic | replace('home/cover/', '') | replace('/current_position/set', '') }}"
+    data:
+      position: "{{ payload }}"

@@ -1,0 +1,61 @@
+{
+    "version": 1,
+    "key": "core.entity_registry",
+    "data": {
+        "light": [
+            {
+                "entity_id": "corner_light",
+                "original_name": "Corner Light",
+                "brightness_pct": 100
+            },
+            {
+                "entity_id": "tradfri_bulb_3",
+                "original_name": "Kelsey's light",
+                "brightness_pct": 100
+            },
+            {
+                "entity_id": "lounge_front",
+                "original_name": "Lounge Front",
+                "brightness_pct": 100,
+                "kelvin": 5300,
+                "kelvin_min": 2200,
+                "kelvin_max": 4000
+            },
+            {
+                "entity_id": "lounge_back",
+                "original_name": "Lounge Back",
+                "brightness_pct": 100,
+                "kelvin": 5300,
+                "kelvin_min": 2200,
+                "kelvin_max": 4000
+            },
+            {
+                "entity_id": "origami",
+                "original_name": "Origami",
+                "brightness_pct": 100
+            },
+            {
+                "entity_id": "desklamp",
+                "original_name": "Desk Lamp",
+                "brightness_pct": 100,
+                "kelvin": 5300,
+                "kelvin_min": 2700,
+                "kelvin_max": 6500
+            }
+        ],
+
+        "switch":[
+            {
+                "entity_id": "fire",
+                "original_name": "Fire place"
+            }
+        ],
+
+        "cover": [
+            {
+                "entity_id": "tradfri_blind",
+                "original_name": "Blinds"
+            }
+        ]
+    }
+}
