@@ -1,4 +1,4 @@
-# M5Stack_HomeControl
+# M5Stack HomeControl
 Control your home with a M5Stack and Home Assistant!
 
 I developed a program to control the smart devices in your home.
