@@ -12,4 +12,3 @@ For this to work you will need Home Assistant running together with the MQTT int
 
 More information and a how-to guide coming soon!
 
-https://user-images.githubusercontent.com/42470993/117556014-6309d280-b05c-11eb-8f8e-bb016274a006.MOV
