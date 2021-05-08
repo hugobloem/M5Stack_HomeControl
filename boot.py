@@ -4,6 +4,8 @@ import os
 import wifiCfg
 import config as c
 
+"""Script to connect device to WiFi, runs before main.py"""
+
 try:
     sd = SDCard(slot=3, miso=Pin(38), mosi=Pin(23), sck=Pin(18), cs=Pin(4))
     sd.info()
