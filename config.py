@@ -15,6 +15,7 @@ status_bar_width = 30
 
 vibrationIntensity = 1
 brightness = 80
+standby_delay = 120000
 
 mqtt_client_id = 'm5'
 mqtt_server = '192.168.1.100'

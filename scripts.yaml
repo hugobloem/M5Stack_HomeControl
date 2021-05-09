@@ -42,7 +42,7 @@ mqtt_light_ct:
       entity_id:
       - "{{ 'light.' + topic | replace('home/light/', '') | replace('/color_temp/set', '') }}"
     data:
-      kelvin: "{{ payload }}"
+      color_temp: "{{ payload }}"
 
 # Switch state (on/off) control
 mqtt_switch_state:

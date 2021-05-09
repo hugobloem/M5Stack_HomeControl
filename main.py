@@ -25,8 +25,12 @@ class UI():
     def __init__(self):
         """Initiate class"""
         # Screen variables
+        self.disp = lv.disp_get_default()
         self.hor_res = c.hor_res
         self.ver_res = c.ver_res
+        self.brightness = c.brightness
+        self.standby = False
+        self.standby_delay = c.standby_delay
         self.tiles = {}
 
         # Loading spinner
@@ -52,6 +56,14 @@ class UI():
             self.bat_pct = map_value(m5stack.power.getBatVoltage(), 3.7, 4.1, 0, 100)
             self.battery.set_text(str(self.bat_pct) + '%')
         m5stack.timerSch.run('battery_timer', 60000, 0x00)
+
+        # Standby after set time
+        # Check if active time has been exceeded every minute
+        @m5stack.timerSch.event('standby_timer')
+        def standby_timer():
+            if time.ticks_ms() > self.disp.last_activity_time + self.standby_delay:
+                self.set_standby()
+        m5stack.timerSch.run('standby_timer', 60000, 0x00)
 
         # Tileview variables
         self.valid_pos = []
@@ -266,6 +278,23 @@ class UI():
         exitbtn_label = lv.label(exitbtn)
         exitbtn_label.set_text('Close')
 
+    def set_standby(self):
+        """Turn off the display."""
+        def standby_cb(source, event):
+            if event == lv.EVENT.CLICKED:
+                source.delete()
+                m5stack.power.setLCDBrightness(self.brightness)
+                self.standby = False
+
+        if self.standby == False:
+            standbybtn = lv.btn(scr)
+            standbybtn.set_size(self.hor_res, self.ver_res)
+            standbybtn.set_event_cb(standby_cb)
+            m5stack.power.setLCDBrightness(0)
+            self.standby = True
+
+
+
 def getEntities(entity_registry_path, type):
     """Get the entities from the entity registry belonging to a single group"""
     with open(entity_registry_path, 'r') as f:
@@ -289,16 +318,16 @@ class Light():
 
         # Add brightness if supported
         try:
-            self.brightness_pct = entity['brightness_pct']
+            self.brightness_pct = int(entity['brightness_pct'])
             ha.subscribe(self.topic + '/brightness', self._bright_callback)
         except:
             self.brightness_pct = None
 
         # Add colour temperature if supported
         try:
-            self.kelvin = entity['kelvin']
-            self.kelvin_max = entity['kelvin_max']
-            self.kelvin_min = entity['kelvin_min']
+            self.kelvin = int(entity['kelvin'])
+            self.kelvin_max = int(entity['kelvin_max'])
+            self.kelvin_min = int(entity['kelvin_min'])
             ha.subscribe(self.topic + '/color_temp', self._ct_callback)
         except:
             self.kelvin = None
@@ -313,12 +342,13 @@ class Light():
 
     def _bright_callback(self, topic_data):
         """Callback to update light brightness from Home Assistant"""
-        self.brightness_pct = int(topic_data)
+        brightness_pct = int(topic_data)*100//255
+        self.brightness_pct = brightness_pct
 
     def _ct_callback(self, topic_data):
         """Callback to update light colour temperature from Home Assistant"""
         mired = int(topic_data)
-        self.kelvin = 1e6//mired
+        self.kelvin = int(1e6//mired)
 
     def turn_on(self):
         """Turn on the light"""
@@ -480,11 +510,12 @@ ha.start()
 
 # Screen brightness slider on settings page.
 screen = M5Screen()
-screen.set_screen_brightness(c.brightness)
+screen.set_screen_brightness(ui.brightness)
 
 def change_brightness(source, event):
     """Change screen brightness callback"""
     if event == lv.EVENT.VALUE_CHANGED:
+        ui.brightness = source.get_value()
         screen.set_screen_brightness(source.get_value())
         slider_label.set_text(str(source.get_value()))
 
@@ -493,7 +524,7 @@ slider.set_event_cb(change_brightness)
 slider.set_width(200)
 slider.align(ui.tiles['Settings']['window'], lv.ALIGN.CENTER, 0, 0)
 slider.set_range(30, 100)
-slider.set_value(c.brightness, 0)
+slider.set_value(ui.brightness, 0)
 
 slider_label=lv.label(ui.tiles['Settings']['tile'])
 slider_label.set_text(str(c.brightness))
