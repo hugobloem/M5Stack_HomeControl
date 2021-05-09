@@ -1,4 +1,7 @@
-# M5Stack_HomeControl
+
+
+
+# M5Stack HomeControl
 Control your home with a M5Stack and Home Assistant!
 
 I developed a program to control the smart devices in your home.
@@ -8,3 +11,5 @@ I developed a program to control the smart devices in your home.
 For this to work you will need Home Assistant running together with the MQTT integration. 
 
 More information and a how-to guide coming soon!
+
+![interface_movie](https://user-images.githubusercontent.com/42470993/117556083-fe02ac80-b05c-11eb-8e9f-9400113b2406.gif)
