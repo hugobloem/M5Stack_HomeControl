@@ -1,5 +1,5 @@
-
-
+## !UPDATE
+Hi, I thank those that have showed interest in this project. However, as you can tell by the activity I am not working on this project anymore. I found that the documentation for M5stack devices is lacking. Getting the device to connect to your computer and upload code to it proved buggy. I am therefore no longer interested in developping for this platform. This repository is thus more for those who have a working connection to the device and know how to interface with it. The codes here are provided as is, and are not developped any further (for now).
 
 # M5Stack HomeControl
 Control your home with a M5Stack and Home Assistant!
